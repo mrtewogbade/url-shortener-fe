@@ -1,4 +1,3 @@
-// src/components/UrlList.jsx
 import React, { useState, useEffect, useMemo } from 'react';
 import { listUrls } from '../api/api';
 import UrlListItem from './UrlListItem';
@@ -14,7 +13,6 @@ const UrlList = () => {
     setError('');
     try {
       const data = await listUrls();
-      // Sort by creation date, newest first
       data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setUrls(data);
     } catch (err) {
@@ -88,7 +86,6 @@ const UrlList = () => {
             </thead>
             <tbody className="bg-white divide-y divide-slate-200">
               {filteredUrls.map((url, index) => (
-                // Assuming backend provides a unique 'id' or 'shortUrlPath' can be used as key
                 <UrlListItem key={url.shortUrlPath || url.id || index} url={url} />
               ))}
             </tbody>

@@ -1,4 +1,3 @@
-// src/components/DecodeSection.jsx
 import React, { useState } from 'react';
 import { decodeUrl } from '../api/api';
 

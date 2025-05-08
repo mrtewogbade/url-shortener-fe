@@ -1,67 +1,9 @@
-
-
-// // src/api/api.js
-// const API_BASE_URL = 'http://localhost:3200/v1/api';
-// const SHORT_URL_BASE = 'http://localhost:3200'; // Base URL for short links
-
-// export const encodeUrl = async (longUrl) => {
-//   const response = await fetch(`${API_BASE_URL}/url/encode`, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({ longUrl }),
-//   });
-//   if (!response.ok) {
-//     const errorData = await response.json().catch(() => ({ message: 'Failed to encode URL' }));
-//     throw new Error(errorData.message || 'Failed to encode URL');
-//   }
-//   return response.json();
-// };
-
-// export const decodeUrl = async (shortUrlPath) => {
-//   // Remove /api/ from the path since it's already in the base URL
-//   const response = await fetch(`${API_BASE_URL}/url/decode?shortUrlPath=${encodeURIComponent(shortUrlPath)}`);
-//   if (!response.ok) {
-//     const errorData = await response.json().catch(() => ({ message: 'Failed to decode URL' }));
-//     throw new Error(errorData.message || 'Failed to decode URL');
-//   }
-//   return response.json();
-// };
-
-// export const getUrlStats = async (urlPath) => {
-//   const response = await fetch(`${API_BASE_URL}/url/stats/${urlPath}`);
-//   if (!response.ok) {
-//     const errorData = await response.json().catch(() => ({ message: 'Failed to fetch stats' }));
-//     throw new Error(errorData.message || 'Failed to fetch stats');
-//   }
-//   return response.json();
-// };
-
-// export const listUrls = async () => {
-//   const response = await fetch(`${API_BASE_URL}/url/list`);
-//   if (!response.ok) {
-//     const errorData = await response.json().catch(() => ({ message: 'Failed to list URLs' }));
-//     throw new Error(errorData.message || 'Failed to list URLs');
-//   }
-//   return response.json();
-// };
-
-// // Function to get the base URL for short links (used for display)
-// export const getShortLinkBaseUrl = () => {
-//   return SHORT_URL_BASE;
-// };
-
-
-
-// src/api/api.js
 const API_BASE_URL = 'http://localhost:3200/v1/api';
-const SHORT_URL_BASE = 'http://localhost:3200'; // Base URL for short links
+const SHORT_URL_BASE = 'http://localhost:3200';
 
 /**
- * Encodes a long URL into a shortened URL
- * @param {string} longUrl - The original URL to shorten
- * @returns {Promise<Object>} - Promise resolving to the shortened URL data
+ * @param {string} longUrl
+ * @returns {Promise<Object>}
  */
 export const encodeUrl = async (longUrl) => {
   try {
@@ -70,7 +12,6 @@ export const encodeUrl = async (longUrl) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      // Backend expects 'url' instead of 'longUrl'
       body: JSON.stringify({ url: longUrl }),
     });
 
@@ -81,11 +22,10 @@ export const encodeUrl = async (longUrl) => {
 
     const data = await response.json();
     
-    // Transform backend response format to match frontend expectations
     return {
-      shortUrl: `${SHORT_URL_BASE}/${data.data.shortUrl}`, // Create full URL
+      shortUrl: `${SHORT_URL_BASE}/${data.data.shortUrl}`,
       originalUrl: data.data.longUrl,
-      shortUrlPath: data.data.shortUrl, // Save path separately for easier access
+      shortUrlPath: data.data.shortUrl,
       visits: data.data.visits,
       createdAt: data.data.createdAt
     };
@@ -95,13 +35,13 @@ export const encodeUrl = async (longUrl) => {
 };
 
 /**
- * Decodes a short URL path back to its original URL
- * @param {string} shortUrlPath - The path part of the short URL
- * @returns {Promise<Object>} - Promise resolving to the original URL data
+
+ * @param {string}
+ * @returns {Promise<Object>}
  */
 export const decodeUrl = async (shortUrlPath) => {
   try {
-    // Backend expects '/decode/:shortUrl' format
+
     const response = await fetch(`${API_BASE_URL}/url/decode/${shortUrlPath}`);
 
     if (!response.ok) {
@@ -125,9 +65,9 @@ export const decodeUrl = async (shortUrlPath) => {
 };
 
 /**
- * Gets statistics for a specific shortened URL
- * @param {string} urlPath - The path part of the short URL
- * @returns {Promise<Object>} - Promise resolving to the URL statistics
+ * 
+ * @param {string} urlPath
+ * @returns {Promise<Object>}
  */
 export const getUrlStats = async (urlPath) => {
   try {
@@ -140,14 +80,12 @@ export const getUrlStats = async (urlPath) => {
 
     const data = await response.json();
     
-    // Transform backend response format to match frontend expectations
     return {
       originalUrl: data.data.longUrl,
       shortUrl: `${SHORT_URL_BASE}/${data.data.shortUrl}`,
       shortUrlPath: data.data.shortUrl,
       visits: data.data.visits,
       createdAt: data.data.createdAt,
-      // Add any other stats fields from backend
       lastVisited: data.data.lastVisited || null,
       userAgentCounts: data.data.userAgentCounts || {},
       referrerCounts: data.data.referrerCounts || {}
@@ -159,7 +97,7 @@ export const getUrlStats = async (urlPath) => {
 
 /**
  * Lists all shortened URLs
- * @returns {Promise<Array>} - Promise resolving to an array of URL data
+ * @returns {Promise<Array>}
  */
 export const listUrls = async () => {
   try {
@@ -172,14 +110,13 @@ export const listUrls = async () => {
 
     const data = await response.json();
     
-    // Transform and map each URL in the response
     return data.data.map(url => ({
       originalUrl: url.longUrl,
       shortUrl: `${SHORT_URL_BASE}/${url.shortUrl}`,
       shortUrlPath: url.shortUrl,
       visits: url.visits,
       createdAt: url.createdAt,
-      id: url._id || url.urlCode || url.shortUrl // Ensure we have a unique identifier
+      id: url._id || url.urlCode || url.shortUrl
     }));
   } catch (error) {
     throw new Error(error.message || 'Failed to list URLs');
@@ -187,9 +124,9 @@ export const listUrls = async () => {
 };
 
 /**
- * Search for URLs by query
- * @param {string} query - The search query
- * @returns {Promise<Array>} - Promise resolving to an array of matching URL data
+
+ * @param {string} query 
+ * @returns {Promise<Array>}
  */
 export const searchUrls = async (query) => {
   if (!query || query.length < 3) {
@@ -206,7 +143,6 @@ export const searchUrls = async (query) => {
 
     const data = await response.json();
     
-    // Transform and map each URL in the response
     return data.data.map(url => ({
       originalUrl: url.longUrl,
       shortUrl: `${SHORT_URL_BASE}/${url.shortUrl}`,
@@ -221,8 +157,8 @@ export const searchUrls = async (query) => {
 };
 
 /**
- * Get the base URL for short links
- * @returns {string} - The base URL
+
+ * @returns {string} 
  */
 export const getShortLinkBaseUrl = () => {
   return SHORT_URL_BASE;

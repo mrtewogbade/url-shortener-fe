@@ -1,4 +1,3 @@
-// src/components/ShortenForm.jsx
 import React, { useState } from 'react';
 import { encodeUrl } from '../api/api';
 
@@ -46,7 +45,7 @@ const ShortenForm = ({ onUrlShortened }) => {
       navigator.clipboard.writeText(shortenedData.shortUrl)
         .then(() => {
           setCopied(true);
-          setTimeout(() => setCopied(false), 2000); // Reset copied status after 2 seconds
+          setTimeout(() => setCopied(false), 2000);
         })
         .catch(err => {
           console.error('Failed to copy:', err);

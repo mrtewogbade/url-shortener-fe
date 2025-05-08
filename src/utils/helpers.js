@@ -1,4 +1,3 @@
-// src/utils/helpers.js
 export const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
   try {
@@ -10,6 +9,6 @@ export const formatDate = (dateString) => {
       minute: '2-digit',
     });
   } catch (error) {
-    return dateString; // Fallback to original string if parsing fails
+    return dateString;
   }
 };
